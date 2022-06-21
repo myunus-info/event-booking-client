@@ -4,20 +4,17 @@ import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import FormLabel from '@mui/material/FormLabel';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+
 import { useForm } from 'react-hook-form';
 import useHttp from '../../hooks/useHttp';
 
 const ReservationForm = props => {
-  const [value, setValue] = useState(new Date());
   const [eventById, setEventById] = useState({});
   const { register, handleSubmit } = useForm();
   const { sendRequest } = useHttp();
-  // const { eventName, hostName, dateTime } = eventById?.data?.event;
+  props.eventsName(eventById.data?.event?.eventName);
 
-  console.log(eventById);
+  // console.log(eventById);
 
   useEffect(() => {
     const getEventById = data => setEventById(data);
@@ -25,9 +22,35 @@ const ReservationForm = props => {
     sendRequest({ url: `http://localhost:5000/api/event/${props.eventId}` }, getEventById);
   }, [props.eventId, sendRequest]);
 
-  const onSubmit = data => {
-    console.log(data);
+  const createBooking = data => {
+    console.log('Create booking data: ', data);
+  };
 
+  const createBookingHandler = async bookingData => {
+    sendRequest(
+      {
+        url: 'http://localhost:5000/api/booking',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingData),
+      },
+      createBooking
+    );
+  };
+
+  const onSubmit = ({ firstName, lastName, email, phone, age }) => {
+    const bookingData = {
+      firstName,
+      lastName,
+      email,
+      phone,
+      age,
+      eventName: eventById.data?.event?.eventName,
+      hostName: eventById.data?.event?.hostName,
+      dateTime: eventById.data?.event?.dateTime,
+    };
+    console.log(bookingData);
+    createBookingHandler(bookingData);
     //////////////////////////////////
     // Handle ModalClose and GiveAlert
     props.giveAlert();
@@ -106,8 +129,7 @@ const ReservationForm = props => {
           type="text"
           variant="outlined"
           margin="normal"
-          {...register('event')}
-          required
+          {...register('eventName')}
         />
       </FormControl>
 
@@ -117,30 +139,18 @@ const ReservationForm = props => {
           type="text"
           variant="outlined"
           margin="normal"
-          {...register('host')}
-          required
+          {...register('hostName')}
         />
       </FormControl>
 
       <FormControl fullWidth sx={{ marginBottom: '0.75rem' }}>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DateTimePicker
-            renderInput={props => (
-              <TextField
-                {...props}
-                margin="normal"
-                {...register('dateTime')}
-                required
-                defaultValue={eventById.data?.event?.dateTime}
-              />
-            )}
-            label="Event Date and Time"
-            value={value}
-            onChange={newValue => {
-              setValue(newValue);
-            }}
-          />
-        </LocalizationProvider>
+        <TextField
+          value={eventById.data?.event?.dateTime}
+          type="text"
+          variant="outlined"
+          margin="normal"
+          {...register('dateTime')}
+        />
       </FormControl>
 
       <div style={{ display: 'flex', justifyContent: 'end' }}>

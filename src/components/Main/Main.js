@@ -12,7 +12,7 @@ import useHttp from '../../hooks/useHttp';
 
 const Main = () => {
   const [eventData, setEventData] = useState([]);
-  const { sendRequest, isLoading, error } = useHttp();
+  const { sendRequest } = useHttp();
 
   // console.log(eventData);
 

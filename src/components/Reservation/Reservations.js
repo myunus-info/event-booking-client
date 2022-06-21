@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Reservations = props => {
   const [open, setOpen] = useState(false);
+  const [eventName, setEventName] = useState();
 
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -19,15 +20,22 @@ const Reservations = props => {
     });
   };
 
+  const fetchEventName = name => setEventName(name);
+
   return (
     <div style={{ marginLeft: 'auto' }}>
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
         Make Reservation
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Dynamic Event Name</DialogTitle>
+        <DialogTitle>{eventName}</DialogTitle>
         <DialogContent>
-          <ReservationForm eventId={props.eventId} handleClose={handleClose} giveAlert={giveMessage} />
+          <ReservationForm
+            eventId={props.eventId}
+            handleClose={handleClose}
+            giveAlert={giveMessage}
+            eventsName={fetchEventName}
+          />
         </DialogContent>
       </Dialog>
 

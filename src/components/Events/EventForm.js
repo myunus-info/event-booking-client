@@ -10,6 +10,7 @@ import { styled } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
 import { Button, FormLabel } from '@mui/material';
 import { useForm } from 'react-hook-form';
+import useHttp from '../../hooks/useHttp';
 
 const EventForm = props => {
   const Input = styled('input')({
@@ -17,9 +18,36 @@ const EventForm = props => {
   });
   const [value, setValue] = useState(new Date());
   const { register, handleSubmit } = useForm();
+  const { sendRequest, isLoading, error } = useHttp();
+
+  const createEvent = eventData => {
+    console.log('Data came from HTTP METHOD: ', eventData);
+  };
+
+  const createEventHandler = async eventObj => {
+    sendRequest(
+      {
+        url: 'http://localhost:5000/api/event',
+        method: 'POST',
+        body: eventObj,
+      },
+      createEvent
+    );
+  };
 
   const onSubmit = data => {
-    console.log(data);
+    const eventData = new FormData();
+    eventData.append('eventName', data.eventName);
+    eventData.append('hostName', data.hostName);
+    eventData.append('house', data.house);
+    eventData.append('city', data.city);
+    eventData.append('district', data.district);
+    eventData.append('division', data.division);
+    eventData.append('dateTime', data.dateTime);
+    eventData.append('photo', data.photo[0]);
+    eventData.append('description', data.description);
+
+    createEventHandler(eventData);
 
     ///////////////////////////////////
     // Handle ModalClose and GiveAlert
@@ -61,7 +89,7 @@ const EventForm = props => {
           variant="outlined"
           margin="normal"
           label="House number"
-          {...register('houseNumber')}
+          {...register('house')}
           required
         />
         <TextField
@@ -119,7 +147,7 @@ const EventForm = props => {
               id="contained-button-file"
               multiple
               type="file"
-              {...register('image')}
+              {...register('photo')}
             />
             <Button variant="outlined" component="span">
               Upload Event Image

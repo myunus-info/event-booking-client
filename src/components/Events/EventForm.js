@@ -18,16 +18,16 @@ const EventForm = props => {
   });
   const [value, setValue] = useState(new Date());
   const { register, handleSubmit } = useForm();
-  const { sendRequest, isLoading, error } = useHttp();
+  const { sendRequest } = useHttp();
 
   const createEvent = eventData => {
-    console.log('Data came from HTTP METHOD: ', eventData);
+    console.log(eventData);
   };
 
   const createEventHandler = async eventObj => {
     sendRequest(
       {
-        url: 'http://localhost:5000/api/event',
+        url: 'http://localhost:5000/api/events',
         method: 'POST',
         body: eventObj,
       },

@@ -7,7 +7,7 @@ import ReservationForm from './ReservationForm';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const Reservations = () => {
+const Reservations = props => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => setOpen(true);
@@ -27,7 +27,7 @@ const Reservations = () => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Dynamic Event Name</DialogTitle>
         <DialogContent>
-          <ReservationForm handleClose={handleClose} giveAlert={giveMessage} />
+          <ReservationForm eventId={props.eventId} handleClose={handleClose} giveAlert={giveMessage} />
         </DialogContent>
       </Dialog>
 

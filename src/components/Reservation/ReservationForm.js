@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/system/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
@@ -8,10 +8,22 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { useForm } from 'react-hook-form';
+import useHttp from '../../hooks/useHttp';
 
 const ReservationForm = props => {
   const [value, setValue] = useState(new Date());
+  const [eventById, setEventById] = useState({});
   const { register, handleSubmit } = useForm();
+  const { sendRequest } = useHttp();
+  // const { eventName, hostName, dateTime } = eventById?.data?.event;
+
+  console.log(eventById);
+
+  useEffect(() => {
+    const getEventById = data => setEventById(data);
+
+    sendRequest({ url: `http://localhost:5000/api/event/${props.eventId}` }, getEventById);
+  }, [props.eventId, sendRequest]);
 
   const onSubmit = data => {
     console.log(data);
@@ -90,8 +102,8 @@ const ReservationForm = props => {
 
       <FormControl fullWidth>
         <TextField
+          value={eventById.data?.event?.eventName}
           type="text"
-          label="Event name"
           variant="outlined"
           margin="normal"
           {...register('event')}
@@ -101,8 +113,8 @@ const ReservationForm = props => {
 
       <FormControl fullWidth>
         <TextField
+          value={eventById.data?.event?.hostName}
           type="text"
-          label="Host name"
           variant="outlined"
           margin="normal"
           {...register('host')}
@@ -114,7 +126,13 @@ const ReservationForm = props => {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateTimePicker
             renderInput={props => (
-              <TextField {...props} margin="normal" {...register('dateTime')} required />
+              <TextField
+                {...props}
+                margin="normal"
+                {...register('dateTime')}
+                required
+                defaultValue={eventById.data?.event?.dateTime}
+              />
             )}
             label="Event Date and Time"
             value={value}

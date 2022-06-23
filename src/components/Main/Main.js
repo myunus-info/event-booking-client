@@ -68,7 +68,7 @@ const Main = () => {
         <Grid container spacing={2} alignItems="center">
           {isLoading ? (
             <h1 style={{ width: '20%', margin: '3rem auto 0' }}>Loading...</h1>
-          ) : error ? (
+          ) : error || eventData.data?.events?.length < 1 ? (
             <h1 style={{ width: '20%', margin: '3rem auto 0' }}>No data found!</h1>
           ) : (
             eventData.data?.events?.map(

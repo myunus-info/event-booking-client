@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 
 const Main = () => {
   const [eventData, setEventData] = useState([]);
-  const [queryString, setqueryString] = useState('');
+  const [query, setQuery] = useState('');
   const { sendRequest, error, isLoading } = useHttp();
   const {
     register,
@@ -26,20 +26,20 @@ const Main = () => {
 
   const onSubmit = data => {
     const eventSlug = data.queryString.toLowerCase().split(' ').join('-');
-    setqueryString(eventSlug);
+    setQuery(eventSlug);
   };
 
   useEffect(() => {
     const getEventData = data => setEventData(data);
 
-    if (queryString) {
-      sendRequest({ url: `http://localhost:5000/api/events?query=${queryString}` }, getEventData);
+    if (query) {
+      sendRequest({ url: `http://localhost:5000/api/events?eventName=${query}` }, getEventData);
     } else {
       sendRequest({ url: 'http://localhost:5000/api/events' }, getEventData);
     }
 
     if (isSubmitSuccessful) reset();
-  }, [queryString, sendRequest, isSubmitSuccessful, reset]);
+  }, [query, sendRequest, isSubmitSuccessful, reset]);
 
   return (
     <>
@@ -47,11 +47,10 @@ const Main = () => {
         component="form"
         onSubmit={handleSubmit(onSubmit)}
         sx={{
-          p: '5px 7px',
+          p: '5px 1rem',
           display: 'flex',
           alignItems: 'center',
-          width: 500,
-          marginLeft: 'auto',
+          justifyContent: 'center',
         }}
       >
         <InputBase
@@ -83,17 +82,28 @@ const Main = () => {
                         alt={eventName}
                       />
                       <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
+                        <Typography
+                          sx={{ fontWeight: 'bold' }}
+                          gutterBottom
+                          variant="h5"
+                          component="div"
+                        >
                           {eventName}
                         </Typography>
-                        <Typography gutterBottom variant="h6" component="div">
-                          Hosted by: {hostName}
+                        <Typography gutterBottom variant="body1" component="div">
+                          <span style={{ fontWeight: 'bold' }}>Hosted by</span> {hostName}
                         </Typography>
-                        <Typography variant="body1" color="text.secondary">
-                          Takes place on {dateTime}
+                        <Typography
+                          variant="body1"
+                          color="text.secondary"
+                          component="div"
+                          marginBottom={1}
+                        >
+                          <span style={{ fontWeight: 'bold' }}>Takes place on</span> {dateTime}
                         </Typography>
-                        <Typography variant="body1" color="text.secondary">
-                          Houe: {venue.house} City: {venue.city} Discrict: {venue.district} Division:{' '}
+                        <Typography variant="body1" color="text.secondary" marginBottom={1}>
+                          <span style={{ fontWeight: 'bold' }}>Address</span>: {venue.house} {venue.city}
+                          {venue.district}
                           {venue.division}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">

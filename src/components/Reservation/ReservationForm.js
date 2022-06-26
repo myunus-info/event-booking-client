@@ -13,9 +13,6 @@ const ReservationForm = props => {
   const [eventById, setEventById] = useState({ eventName: '', hostName: '', dateTime: '' });
   const { register, handleSubmit } = useForm();
   const { sendRequest } = useHttp();
-  // props.eventsName(eventById.data?.event?.eventName);
-
-  // console.log(eventById);
 
   useEffect(() => {
     const getEventById = data => setEventById(data?.data?.event);
@@ -60,7 +57,7 @@ const ReservationForm = props => {
 
   return (
     <>
-      <DialogTitle>{eventById.eventName}</DialogTitle>
+      <DialogTitle style={{ marginLeft: '-1.5rem' }}>{eventById.eventName}</DialogTitle>
       <Box component="form" onSubmit={handleSubmit(onSubmit)}>
         <FormControl
           fullWidth
